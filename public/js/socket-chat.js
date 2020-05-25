@@ -1,6 +1,6 @@
 var socket = io();
 
-let params = new URLSearchParams(window.location.search);
+// let params = new URLSearchParams(window.location.search);
 
 if (!params.has('nombre') || !params.has('sala')) {
     window.location = 'index.html';
@@ -16,7 +16,8 @@ socket.on('connect', function() {
     console.log('Conectado al servidor');
 
     socket.emit('getInChat', usuario, (resp) => {
-        console.log(resp);
+        // console.log(resp);
+        renderizarUsuarios(resp);
     });
 });
 
@@ -24,19 +25,23 @@ socket.on('connect', function() {
 socket.on('disconnect', function() {
 
     console.log('Perdimos conexión con el servidor');
-
+    renderizarUsuarios(usuarios);
 });
 
 socket.on('offChat', (mensaje) => {
     console.log('Servidor: ', mensaje);
+    renderizarMensajes(mensaje, false);
 })
 
 socket.on('onChat', (usuarios) => {
     console.log(usuarios);
+    renderizarUsuarios(usuarios);
 })
 
 socket.on('sendMessage', (data) => {
-    console.log(data);
+    // console.log(data);
+    renderizarMensajes(data, false);
+    scrollBottom();
 })
 
 // Mensajes privados

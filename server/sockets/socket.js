@@ -21,15 +21,19 @@ io.on('connection', (client) => {
 
         client.broadcast.to(data.sala).emit('onChat', usuario.obtenerPorSala(data.sala));
 
+        client.broadcast.to(data.sala).emit('offChat', sendMessage('Administrador', `${data.nombre} se unió al chat`));
+
         callback(usuario.obtenerPorSala(data.sala));
     })
 
-    client.on('sendMessage', (data) => {
+    client.on('sendMessage', (data, callback) => {
 
         let persona = usuario.obtenerPorId(client.id);
 
         let mensaje = sendMessage(persona.nombre, data.message);
         client.broadcast.to(persona.sala).emit('sendMessage', mensaje);
+
+        callback(mensaje);
     })
 
     client.on('disconnect', () => {
